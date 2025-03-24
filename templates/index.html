@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLR Student Prediction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 50px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            width: 400px;
+            margin: auto;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            color: black;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #ffaa00;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+        }
+        .score-highlight {
+            color: #ffcc00;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h2>📊 Student Score Prediction</h2>
+    <div class="container">
+        <p>Enter study hours to predict exam score:</p>
+        <input type="number" id="hours" placeholder="Enter hours studied">
+        <button onclick="predict()">Predict Score</button>
+        <p>Your Predicted Score: <span class="score-highlight" id="inline-result">--</span></p>
+    </div>
+
+    <div class="result-box">
+        📢 Prediction Result: <span class="score-highlight" id="result">--</span>
+    </div>
+
+    <script>
+        function predict() {
+            let hours = document.getElementById("hours").value;
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ "hours": [parseFloat(hours)] })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let score = data.predicted_score;
+                document.getElementById("inline-result").innerText = score;
+                document.getElementById("result").innerText = score;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("result").innerText = "Error fetching prediction";
+            });
+        }
+    </script>
+</body>
+</html>
